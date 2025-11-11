@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>QADEER AI PAIR CODE</title>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      font-family: "Poppins", sans-serif;
+      position: fixed;
+      top: 0;
+      left: 0;
+      touch-action: none;
+    }
+
+    /* Stars layer (pure CSS) */
+    .stars {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      z-index: -2;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: twinkle 3s infinite ease-in-out;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.1); }
+    }
+
+    /* Shooting stars layer */
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    /* Glass box container */
+    .container {
+      text-align: center;
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 15px;
+      padding: 25px;
+      width: 310px;
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.1);
+      transition: 0.3s;
+    }
+
+    .container:hover {
+      box-shadow: 0 0 40px rgba(0, 255, 255, 0.4);
+      transform: scale(1.02);
+    }
+
+    h3 {
+      color: cyan;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px cyan;
+    }
+
+    h6 {
+      color: #ccc;
+      margin-bottom: 15px;
+    }
+
+    .input-container {
+      display: flex;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .input-container input {
+      flex: 1;
+      padding: 10px;
+      background: transparent;
+      border: none;
+      color: cyan;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .input-container button {
+      background: linear-gradient(90deg, #00ffff, #0077ff);
+      color: black;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 10px 15px;
+      transition: 0.3s;
+    }
+
+    .input-container button:hover {
+      background: linear-gradient(90deg, #00ffff, #0044ff);
+      color: white;
+      box-shadow: 0 0 10px #00ffff;
+    }
+
+    #pair {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    #copy {
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    #copy:hover {
+      color: cyan;
+      text-shadow: 0 0 10px cyan;
+    }
+
+    * {
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" id="stars"></div>
+  <canvas id="shootingStars"></canvas>
+
+  <div class="container">
+    <i class="fa fa-user" style="font-size:30px;color:#0ff;margin-bottom:10px;"></i>
+    <h3>Link with phone number</h3>
+    <h6>🌌 Enter your number with country code 🌌</h6>
+
+    <div class="input-container">
+      <input placeholder="+923151105391" type="number" id="number">
+      <button id="submit">Enter</button>
+    </div>
+
+    <main id="pair"></main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+  <script>
+    // Create small twinkling stars
+    const starContainer = document.getElementById("stars");
+    for (let i = 0; i < 120; i++) {
+      const star = document.createElement("div");
+      star.classList.add("star");
+      star.style.width = Math.random() * 2 + "px";
+      star.style.height = star.style.width;
+      star.style.top = Math.random() * 100 + "%";
+      star.style.left = Math.random() * 100 + "%";
+      star.style.animationDelay = Math.random() * 5 + "s";
+      starContainer.appendChild(star);
+    }
+
+    // Shooting stars canvas
+    const canvas = document.getElementById('shootingStars');
+    const ctx = canvas.getContext('2d');
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    const stars = [];
+    function createStar() {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height / 2,
+        length: Math.random() * 80 + 10,
+        speed: Math.random() * 6 + 4,
+        alpha: Math.random() * 0.7 + 0.3
+      });
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = stars.length - 1; i >= 0; i--) {
+        let s = stars[i];
+        ctx.beginPath();
+        ctx.moveTo(s.x, s.y);
+        ctx.lineTo(s.x + s.length, s.y + s.length / 2);
+        ctx.strokeStyle = `rgba(255,255,255,${s.alpha})`;
+        ctx.lineWidth = 1.3;
+        ctx.stroke();
+        s.x += s.speed;
+        s.y += s.speed / 2;
+        s.alpha -= 0.01;
+        if (s.alpha <= 0) stars.splice(i, 1);
+      }
+    }
+
+    function animateStars() {
+      if (Math.random() < 0.02) createStar();
+      drawStars();
+      requestAnimationFrame(animateStars);
+    }
+
+    animateStars();
+
+    // Pair code logic
+    const pair = document.getElementById("pair");
+    const btn = document.getElementById("submit");
+    const num = document.getElementById("number");
+
+    async function Copy() {
+      let text = document.getElementById("copy").innerText;
+      let obj = document.getElementById("copy");
+      await navigator.clipboard.writeText(obj.innerText.replace('CODE: ', ''));
+      obj.innerText = "COPIED!";
+      obj.style = "color:#0ff;font-weight:bold";
+      setTimeout(() => {
+        obj.innerText = text;
+        obj.style = "color:red;font-weight:bold";
+      }, 600);
+    }
+
+    btn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      if (!num.value) {
+        pair.innerHTML = '<a style="color:red;font-weight:bold">❗ Enter your WhatsApp number with country code.</a>';
+      } else if (num.value.replace(/[^0-9]/g, "").length < 11) {
+        pair.innerHTML = '<a style="color:red;font-weight:bold">❌ Invalid number format ❌</a>';
+      } else {
+        const bc = num.value.replace(/[^0-9]/g, "");
+        pair.innerHTML = '<a style="color:#0ff;font-weight:bold">Please wait 🔎</a>';
+        let { data } = await axios(`/code?number=${bc}`);
+        let code = data.code || "Service Unavailable";
+        pair.innerHTML = `<font id="copy" onclick="Copy()" style="color:red;font-weight:bold">CODE: <span style="color:white;">${code}</span></font>`;
+      }
+    });
+  </script>
+</body>
+</html>

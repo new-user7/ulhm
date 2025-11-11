@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="" type="image/x-icon">
+  <style>
+    body {
+      background-color: #000;  /* ✅ pure black background */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "url": "https://railway.app",
+      "logo": "https://telegra.ph/file/adc46970456c26cad0c15.jpg"
+    }
+
+    .button-container {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h3 {
+      margin-top: -40px;
+      opacity: 0;
+      animation: fadeIn 3s forwards;
+      background: linear-gradient(90deg, #00ffff, #ff00c8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    .button {
+      width: 160px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0px 15px;
+      border-radius: 12px;
+      border: 2px solid transparent;
+      background-color: transparent;
+      color: white;
+      position: relative;
+      cursor: pointer;
+      font-weight: 800;
+      transition: 0.3s ease;
+      background-image: linear-gradient(90deg, #0a0a0a, #111);
+      text-decoration: none;
+      overflow: hidden;
+    }
+
+    /* Thin animated gradient border */
+    .button::before {
+      content: "";
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      width: calc(100% + 4px);
+      height: calc(100% + 4px);
+      border-radius: 12px;
+      background: linear-gradient(90deg, #00ffff, #ff00c8, #00ffb3, #0088ff, #00ffff);
+      background-size: 400%;
+      z-index: 0;
+      animation: borderMove 6s linear infinite;
+    }
+
+    .button span {
+      position: relative;
+      z-index: 2;
+    }
+
+    .button::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      right: 2px;
+      bottom: 2px;
+      border-radius: 10px;
+      background: linear-gradient(180deg, #0a0a0a, #1c1c1c);
+      z-index: 1;
+    }
+
+    @keyframes borderMove {
+      0% { background-position: 0 0; }
+      50% { background-position: 400% 0; }
+      100% { background-position: 0 0; }
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #000;
+      color: #fff;
+      padding: 10px 0;
+      text-align: center;
+      font-size: 14px;
+      letter-spacing: 1px;
+      border-top: 1px solid #222;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="button-container">
+    <h3>QADEER AI SESSION SECTION</h3>
+    <div></div>
+
+    <a href="/qr" class="button" target="_blank"><span>QR-CODE</span></a><br>
+    <a href="/pair" class="button" target="_blank"><span>PAIRING-CODE</span></a><br>
+    <a href="https://github.com/Qadeer-Xtech/QADEER-AI/fork" class="button" target="_blank"><span>FORK BOT</span></a><br>
+    <a href="https://whatsapp.com/channel/0029VajWxSZ96H4SyQLurV1H" class="button" target="_blank"><span>WA-CHANNEL</span></a><br>
+
+    <h5>YOU HAVE ERROR CLICK ERROR BUTTON</h5>
+    <a href="https://wa.me/message/923151105391?text=HAVE_ERROR_QADEER_AI" class="button" target="_blank"><span>ERROR</span></a><br>
+
+    <h5>OWNER CONTACT</h5>
+    <a href="https://wa.me/message/923151105391?text=QADEER_KHAN" class="button" target="_blank"><span>OWNER</span></a><br>
+
+    <footer>
+      QADEER AI &copy; <span id="currentYear"></span>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
