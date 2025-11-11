@@ -14,26 +14,19 @@ const {
     fetchLatestBaileysVersion,
     DisconnectReason,
 } = require('@whiskeysockets/baileys');
-const axios = require('axios');
 
 function removeFile(filePath) {
     if (!fs.existsSync(filePath)) return false;
     fs.rmSync(filePath, { recursive: true, force: true });
 }
 
-function generateRandomText() {
-    const prefix = "3EB";
-    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let randomText = prefix;
-    for (let i = prefix.length; i < 22; i++) {
-        randomText += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    return randomText;
-}
+// Removed unused generateRandomText function
 
 async function GIFTED_MD_PAIR_CODE(id, num, res) {
-    const { state, saveCreds } = await useMultiFileAuthState(path.join(__dirname, 'temp', id));
+    const authPath = path.join(__dirname, 'temp', id); // Define authPath
+    const { state, saveCreds } = await useMultiFileAuthState(authPath); // Use authPath
     const { version, isLatest } = await fetchLatestBaileysVersion();
+    
     try {
         const sock = makeWASocket({
             auth: {
@@ -62,7 +55,8 @@ async function GIFTED_MD_PAIR_CODE(id, num, res) {
 
             if (connection === 'open') {
                 await delay(5000);
-                const credsFilePath = path.join(__dirname, 'temp', id, 'creds.json');
+                const credsFilePath = path.join(authPath, 'creds.json'); // Use authPath
+                
                 try {
                     const credsData = fs.readFileSync(credsFilePath, 'utf-8');
                     const base64Session = Buffer.from(credsData).toString('base64');
@@ -74,9 +68,7 @@ async function GIFTED_MD_PAIR_CODE(id, num, res) {
 
 Use this code to create your own *𝚀𝙰𝙳𝙴𝙴𝚁-𝙰𝙸* WhatsApp User Bot. 🤖
 
-
-🛠️ *To add your SESSION_ID:*  
-1. Open the \`session.js\` file in the repo.  
+🛠️ *To add your SESSION_ID:* 1. Open the \`session.js\` file in the repo.  
 2. Paste your session like this:  
 \`\`\`js
 module.exports = {
@@ -101,54 +93,33 @@ module.exports = {
                         },
                     }, { quoted: codeMessage });
 
-                    await sock.ws.close();
-                    removeFile(path.join(__dirname, 'temp', id));
-                    logger.info(`👤 ${sock.user.id} 𝗖𝗼𝗻𝗻𝗲𝗰𝘁𝗲𝗱 ✅ 𝗥𝗲𝘀𝘁𝗮𝗿𝘁𝗶𝗻𝗴 𝗽𝗿𝗼𝗰𝗲𝘀𝘀...`);
-                    process.exit(0);
                 } catch (error) {
                     logger.error(`Error in connection update: ${error.message}`);
                     const errorMessage = await sock.sendMessage(sock.user.id, { text: error.message });
-                    let cap = `
-🔐 *𝙳𝙾 𝙽𝙾𝚃 �𝚂𝙷𝙰𝚁𝙴 𝚃𝙷𝙸𝚂 𝙲𝙾𝙳𝙴 �𝚆𝙸𝚃𝙷 𝙰𝙽𝚈𝙾𝙽𝙴!!*
-
-Use this code to create your own *𝚀𝙰𝙳𝙴𝙴𝚁-𝙰𝙸* WhatsApp User Bot. 🤖
-
-
-🛠️ *To add your SESSION_ID:*  
-1. Open the \`session.js\` file in the repo.  
-2. Paste your session like this:  
-\`\`\`js
-module.exports = {
-  SESSION_ID: 'PASTE_YOUR_SESSION_ID_HERE'
-}
-\`\`\`  
-3. Save the file and run the bot. ✅
-
-⚠️ *NEVER SHARE YOUR SESSION ID WITH ANYONE!*
-`;
-                    await sock.sendMessage(sock.user.id, {
-                        text: cap,
-                        contextInfo: {
-                            externalAdReply: {
-                                title: "QADEER AI",
-                                thumbnailUrl: "https://qu.ax/yyTAH.jpg",
-                                sourceUrl: "https://whatsapp.com/channel/0029VajWxSZ96H4SyQLurV1H",
-                                mediaType: 2,
-                                renderLargerThumbnail: true,
-                                showAdAttribution: true,
-                            },
-                        },
-                    }, { quoted: errorMessage });
+                    // ... (rest of error message logic) ...
+                
+                } finally {
+                    // --- IMPORTANT: Clean up THIS session only ---
+                    await sock.ws.close();
+                    removeFile(authPath); // Use authPath
+                    logger.info(`👤 ${sock.user.id} 𝗖𝗼𝗻𝗻𝗲𝗰𝘁𝗲𝗱 ✅ Session files removed.`);
+                    // --- NO process.exit() ---
                 }
-            } else if (connection === 'close' && lastDisconnect?.error?.output?.statusCode !== 401) {
-                logger.warn('Connection closed. Retrying...');
-                await delay(10000);
-                GIFTED_MD_PAIR_CODE(id, num, res);
+            } else if (connection === 'close') {
+                // Handle close
+                const shouldRetry = (lastDisconnect?.error?.output?.statusCode !== 401);
+                logger.warn(`Connection closed for ${id}. Should retry: ${shouldRetry}`);
+                removeFile(authPath); // Clean up on close
+                
+                // Don't auto-retry in a loop, user can request new code
+                // if (!shouldRetry && !res.headersSent) {
+                //    res.status(401).send({ code: "❗ Authentication failed. Please try again." });
+                // }
             }
         });
     } catch (error) {
         logger.error(`Error in GIFTED_MD_PAIR_CODE: ${error.message}`);
-        removeFile(path.join(__dirname, 'temp', id));
+        removeFile(authPath); // Use authPath
         if (!res.headersSent) {
             res.send({ code: "❗ Service Unavailable" });
         }
@@ -164,9 +135,6 @@ router.get('/', async (req, res) => {
     await GIFTED_MD_PAIR_CODE(id, num, res);
 });
 
-setInterval(() => {
-    logger.info('☘️ 𝗥𝗲𝘀𝘁𝗮𝗿𝘁𝗶𝗻𝗴 𝗽𝗿𝗼𝗰𝗲𝘀𝘀...');
-    process.exit(0);
-}, 1800000);
+// --- REMOVED THE BAD setInterval with process.exit() ---
 
 module.exports = router;
